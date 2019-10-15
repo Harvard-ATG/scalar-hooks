@@ -8,9 +8,8 @@ See the CI documentation regarding [Hooks - Extending the Framework Core](https:
 
 To use all o the hooks:
 
-1. Copy `config/hooks.php` to the scalar `system/application/config/hooks.php`
-2. Copy `hooks/*.php` to `system/application/hooks/`
-3. In `system/application/config/config.php` enable hooks, since they are disabled by default:
+1. Copy `hooks/*.php` to `system/application/hooks/`
+2. In `system/application/config/config.php` enable hooks, since they are disabled by default:
     ```
     $config['enable_hooks'] = TRUE;
     ```
@@ -18,11 +17,21 @@ To use all o the hooks:
 
 ## Hook Documentation
 
-To use `hooks/allowed_hosts.php`, the following environment variable must be set:
+## Allowed Hosts
+
+Configuration in `config/hooks.php`:
+
+```php
+$hook['post_controller_constructor'] = array(
+    'class'    => 'Scalar_hook_allowed_hosts',
+    'function' => 'process_request',
+    'filename' => 'allowed_hosts.php',
+    'filepath' => 'hooks',
+    'params'   => array('subdomains' => true)
+);
+```
+
+Environment variables:
 
 - `SCALAR_ALLOWED_HOSTS: "my.scalar.doman"`
-
-To also check subdomains, be sure to specify the parent domain otherwise it defaults to the `SERVER_NAME`:
-
-- `SCALAR_DOMAIN: "my.scalar.domain"`
-
+- `SCALAR_DOMAIN: "my.scalar.domain"` (only if subdomains is set to true)

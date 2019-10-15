@@ -6,14 +6,14 @@ See the CI documentation regarding [Hooks - Extending the Framework Core](https:
 
 ## Quickstart
 
-To use all o the hooks:
+To use the hooks:
 
 1. Copy `hooks/*.php` to `system/application/hooks/`
-2. In `system/application/config/config.php` enable hooks, since they are disabled by default:
+2. In the scalar installation, edit `system/application/config/config.php` and enable hooks:
     ```
     $config['enable_hooks'] = TRUE;
     ```
-4. Review the documentation for each hook and configure as necessary (e.g. set environment variables, etc). 
+4. Configure each hook in `config/hooks.php` (otherwise it won't be triggered) and review documentation in this readme for any other required parameters or environment variables.
 
 ## Hook Documentation
 

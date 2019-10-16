@@ -15,28 +15,12 @@
  *     after being validated against a book of the same name. The assumption is
  *     that the book slug will be used as the subdomain.
  * 
- * Configure in _config/hooks.php_ as follows:
- * 
- *   $hook['post_controller_constructor'] = array(
- *      'class'    => 'Scalar_hook_allowed_hosts',
- *      'function' => 'process_request',
- *      'filename' => 'allowed_hosts.php',
- *      'filepath' => 'hooks',
- *      'params'   => array('subdomains' => true)
- *   );
- * 
- * Environment variables:
-
- * - SCALAR_DOMAIN : domain name used to check for subdomains
- * - SCALAR_ALLOWED_HOSTS : string of comma separated hosts
- * - SCALAR_DEBUG : when enabled and allowed hosts is empty, adds localhost automatically
- * 
  */
 class Scalar_hook_allowed_hosts {
     public $CI = null;  // holds codeigniter instance
     public $params = array('subdomains' => false); // holds hook parameters
 
-		public function __construct() {}
+	public function __construct() {}
 
     public function init($params) {
         if(isset($params['subdomains'])) {
@@ -51,7 +35,7 @@ class Scalar_hook_allowed_hosts {
     public function process_request($params) {
         $this->init($params);
         $host = $this->get_requested_host();
-        if(!$this->allowed_host($host)) {
+        if(!$this->is_allowed_host($host)) {
             error_log("Scalar_hook_allowed_hosts returned 403 for requested host=$host");
             show_error("Access denied: ".$host, 403, "Forbidden");
         }
@@ -82,13 +66,13 @@ class Scalar_hook_allowed_hosts {
         return $whitelist;
     }
 
-		public function is_allowed_host($host) {
-			$is_allowed = $this->is_whitelisted($host);
-			if($this->params['subdomains']) {
-					$is_allowed = $is_allowed || $this->is_allowed_subdomain();
-			}
-			return $is_allowed;
-		}
+    public function is_allowed_host($host) {
+        $is_allowed = $this->is_whitelisted($host);
+        if($this->params['subdomains']) {
+                $is_allowed = $is_allowed || $this->is_allowed_subdomain($host);
+        }
+        return $is_allowed;
+    }
 
     public function is_whitelisted($host) {
         foreach($this->whitelist() as $item) {
@@ -128,4 +112,3 @@ class Scalar_hook_allowed_hosts {
         return sizeof($result) == 1;
     }
 }
-

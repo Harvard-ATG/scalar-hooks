@@ -35,3 +35,20 @@ Environment variables:
 
 - `SCALAR_ALLOWED_HOSTS: "my.scalar.doman"`
 - `SCALAR_DOMAIN: "my.scalar.domain"` (only if subdomains is set to true)
+
+## Tests
+
+To install PHPUnit:
+
+```
+$ wget -O phpunit https://phar.phpunit.de/phpunit-7.phar
+$ chmod u+x phpunit
+$ ./phpunit --version
+PHPUnit 7.5.16 by Sebastian Bergmann and contributors.
+```
+
+To run unit tests:
+
+```
+$ ./phpunit --bootstrap autoload.php tests
+```

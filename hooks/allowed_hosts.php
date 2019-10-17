@@ -18,13 +18,14 @@
  */
 class Scalar_hook_allowed_hosts {
     public $CI = null;  // holds codeigniter instance
-    public $params = array('subdomains' => false); // holds hook parameters
+    public $params = array('subdomain_allowed' => false); // holds hook parameters
+    public $default_subdomain_validator = 'is_valid_book';
 
 	public function __construct() {}
 
     public function init($params) {
-        if(isset($params['subdomains'])) {
-          $this->params['subdomains'] = (bool) $params['subdomains'];
+        if(isset($params['subdomain_allowed'])) {
+          $this->params['subdomain_allowed'] = (bool) $params['subdomain_allowed'];
         }
         if(!isset($this->CI)) {
           $this->CI =& get_instance();
@@ -68,8 +69,8 @@ class Scalar_hook_allowed_hosts {
 
     public function is_allowed_host($host) {
         $is_allowed = $this->is_whitelisted($host);
-        if($this->params['subdomains']) {
-                $is_allowed = $is_allowed || $this->is_allowed_subdomain($host);
+        if($this->params['subdomain_allowed']) {
+            $is_allowed = $is_allowed || $this->is_allowed_subdomain($host);
         }
         return $is_allowed;
     }
@@ -86,10 +87,12 @@ class Scalar_hook_allowed_hosts {
     public function is_allowed_subdomain($host) {
         $domain = $this->get_scalar_domain();
         $subdomain = $this->get_subdomain_from_host($host, $domain);
+        $subdomain_validator = isset($this->params['subdomain_validator']) ? $this->params['subdomain_validator'] : $this->default_subdomain_validator;
+        if(!is_callable(array($this, $subdomain_validator))) {
+            throw new Exception("Invalid subdomain_validator '$subdomain_validator'");
+        }
         if($subdomain !== FALSE) {
-            if($this->is_valid_book($subdomain)) {
-                return TRUE;
-            }
+            return $this->$subdomain_validator($subdomain);
         }
         return FALSE;
     }
@@ -105,10 +108,19 @@ class Scalar_hook_allowed_hosts {
         return substr($subdomain, 0, -1); // return the subdomain without the dot at the end
     }
 
+    public function is_always_true($book_slug) {
+        return TRUE;
+    }
+
     public function is_valid_book($book_slug) {
         $sql = 'SELECT slug FROM scalar_db_books WHERE slug = ?';
         $query = $this->CI->db->query($sql, array($book_slug));
-        $result = $query->result(); 
-        return sizeof($result) == 1;
+        return sizeof($query->result()) == 1;
+    }
+
+    public function is_valid_book_and_subdomain_is_on($book_slug) {
+        $sql = 'SELECT slug FROM scalar_db_books WHERE slug = ? and subdomain_is_on = 1';
+        $query = $this->CI->db->query($sql, array($book_slug));
+        return sizeof($query->result()) == 1;
     }
 }

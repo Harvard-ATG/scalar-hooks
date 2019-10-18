@@ -27,7 +27,10 @@ $hook['post_controller_constructor'] = array(
     'function' => 'process_request',
     'filename' => 'allowed_hosts.php',
     'filepath' => 'hooks',
-    'params'   => array('subdomains' => true)
+    'params'   => array(
+        'subdomain_allowed' => false, 
+        'subdomain_validator' => 'is_valid_book'
+    )
 );
 ```
 

@@ -17,15 +17,20 @@
  * 
  */
 class Scalar_hook_allowed_hosts {
-    public $CI = null;  // holds codeigniter instance
-    public $params = array('subdomain_allowed' => false); // holds hook parameters
-    public $default_subdomain_validator = 'is_valid_book';
+    public $CI = null;  
+    public $params = array(
+        'subdomain_allowed' => false, 
+        'subdomain_validator' => 'is_valid_book'
+    );
 
-	public function __construct() {}
+    public function __construct() {}
 
     public function init($params) {
         if(isset($params['subdomain_allowed'])) {
           $this->params['subdomain_allowed'] = (bool) $params['subdomain_allowed'];
+        }
+        if(isset($params['subdomain_validator'])) {
+            $this->params['subdomain_validator'] = $params['subdomain_validator'];
         }
         if(!isset($this->CI)) {
           $this->CI =& get_instance();
@@ -87,7 +92,7 @@ class Scalar_hook_allowed_hosts {
     public function is_allowed_subdomain($host) {
         $domain = $this->get_scalar_domain();
         $subdomain = $this->get_subdomain_from_host($host, $domain);
-        $subdomain_validator = isset($this->params['subdomain_validator']) ? $this->params['subdomain_validator'] : $this->default_subdomain_validator;
+        $subdomain_validator = $this->params['subdomain_validator'];
         if(!is_callable(array($this, $subdomain_validator))) {
             throw new Exception("Invalid subdomain_validator '$subdomain_validator'");
         }
@@ -115,12 +120,14 @@ class Scalar_hook_allowed_hosts {
     public function is_valid_book($book_slug) {
         $sql = 'SELECT slug FROM scalar_db_books WHERE slug = ?';
         $query = $this->CI->db->query($sql, array($book_slug));
-        return sizeof($query->result()) == 1;
+        $result = $query->result();
+        return sizeof($result) == 1;
     }
 
     public function is_valid_book_and_subdomain_is_on($book_slug) {
-        $sql = 'SELECT slug FROM scalar_db_books WHERE slug = ? and subdomain_is_on = 1';
+        $sql = 'SELECT slug FROM scalar_db_books WHERE slug = ? AND subdomain_is_on = 1';
         $query = $this->CI->db->query($sql, array($book_slug));
-        return sizeof($query->result()) == 1;
+        $result = $query->result();
+        return sizeof($result) == 1;
     }
 }

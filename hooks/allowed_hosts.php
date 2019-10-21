@@ -73,11 +73,13 @@ class Scalar_hook_allowed_hosts {
     }
 
     public function is_allowed_host($host) {
-        $is_allowed = $this->is_whitelisted($host);
-        if($this->params['subdomain_allowed']) {
-            $is_allowed = $is_allowed || $this->is_allowed_subdomain($host);
+        if($this->is_whitelisted($host)) {
+            return TRUE;
         }
-        return $is_allowed;
+        if($this->params['subdomain_allowed'] && $this->is_allowed_subdomain($host)) {
+            return TRUE;
+        }
+        return FALSE;
     }
 
     public function is_whitelisted($host) {

@@ -1,8 +1,8 @@
 # scalar-hooks
 
-This repository contains Codeigniter hooks designed specifically for [Scalar](https://github.com/anvc/scalar). 
+Hooks for [Scalar](https://github.com/anvc/scalar).
 
-See the CI documentation regarding [Hooks - Extending the Framework Core](https://codeigniter.com/userguide2/general/hooks.html) for more information.  
+This repository contains Codeigniter hooks designed specifically for Scalar. See the [CodeIgniter documentation](https://codeigniter.com/userguide2/index.html) for more details about [Hooks and Extending the Framework Core](https://codeigniter.com/userguide2/general/hooks.html).
 
 ## Quickstart
 
@@ -19,7 +19,13 @@ To use the hooks:
 
 ## Allowed Hosts
 
-Configuration in `config/hooks.php`:
+**Purpose:** 
+
+Provide a list of strings representing the host/domain names that Scalar is allowed to serve. If subdomains are being used for books, optionally validate those subdomains.
+
+**Configuration**:
+
+In `config/hooks.php` add the following:
 
 ```php
 $hook['post_controller_constructor'] = array(
@@ -34,7 +40,7 @@ $hook['post_controller_constructor'] = array(
 );
 ```
 
-Environment variables:
+**Environment variables:**
 
 - `SCALAR_ALLOWED_HOSTS: "my.scalar.doman"`
 - `SCALAR_DOMAIN: "my.scalar.domain"` (only if subdomains is set to true)

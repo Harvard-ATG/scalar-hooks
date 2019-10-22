@@ -43,7 +43,7 @@ $hook['post_controller_constructor'] = array(
 **Environment variables:**
 
 - `SCALAR_ALLOWED_HOSTS: "my.scalar.doman"`
-- `SCALAR_DOMAIN: "my.scalar.domain"` (only if subdomains is set to true)
+- `SCALAR_DOMAIN: "my.scalar.domain"` (only required if subdomains are being validated)
 
 ## Tests
 

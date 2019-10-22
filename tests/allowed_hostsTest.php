@@ -36,6 +36,11 @@ class Scalar_hook_allowed_hostsTest extends TestCase {
         $allowed_hosts = '  foo.scalar.org,   www.scalar.org   ';
         putenv("SCALAR_ALLOWED_HOSTS=$allowed_hosts");
         $this->assertEquals(array('foo.scalar.org', 'www.scalar.org'), $hook->whitelist());
+
+				putenv("SCALAR_ALLOWED_HOSTS=");
+				putenv("SCALAR_DEBUG=1");
+				$this->assertEquals(array("127.0.0.1", "localhost", "[::1]"), $hook->whitelist());
+
     }
 
     public function test_host_is_whitelisted() {
